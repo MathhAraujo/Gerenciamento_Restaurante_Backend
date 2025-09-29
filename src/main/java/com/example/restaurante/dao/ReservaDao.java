@@ -1,5 +1,7 @@
 package com.example.restaurante.dao;
 
+import com.example.restaurante.dto.Occupation_DayDTO;
+import com.example.restaurante.dto.ReservaFuturaDTO;
 import com.example.restaurante.model.Reserva;
 import lombok.AllArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,12 +22,30 @@ public class ReservaDao {
     private final JdbcTemplate jdbcTemplate;
 
     private Reserva mapRowToReserva(ResultSet rs, int rowNum) throws SQLException {
-        Reserva reserva = new Reserva();
-        reserva.setId_reserva(rs.getShort("id_reserva"));
-        reserva.setCliente_cpf(rs.getString("cliente_cpf"));
-        reserva.setQnt_pessoas(rs.getShort("qnt_pessoas"));
-        reserva.setData_hora_chegada(rs.getObject("data_hora_chegada", LocalDateTime.class));
-        return reserva;
+        return new Reserva(
+                rs.getShort("id_reserva"),
+                rs.getString("cliente_cpf"),
+                rs.getShort("qnt_pessoas"),
+                rs.getObject("data_hora_chegada", LocalDateTime.class)
+        );
+    }
+
+    private ReservaFuturaDTO mapRowToReservaFutura(ResultSet rs, int rowNum) throws SQLException {
+        return new ReservaFuturaDTO(
+                rs.getString("nome"),
+                rs.getString("telefone"),
+                rs.getShort("id_reserva"),
+                rs.getShort("qnt_pessoas"),
+                rs.getObject("data_hora_chegada", LocalDateTime.class)
+        );
+    }
+
+    private Occupation_DayDTO mapRowToOccupation_DayDTO(ResultSet rs, int rowNum) throws SQLException {
+        return new Occupation_DayDTO(
+                rs.getString("day"),
+                rs.getInt("num_reserva"),
+                rs.getInt("total_ppl")
+        );
     }
 
     public List<Reserva> findAllReserva() {
@@ -40,6 +60,23 @@ public class ReservaDao {
         return this.jdbcTemplate.query("SELECT * FROM Reserva WHERE cliente_cpf=?", this::mapRowToReserva, cliente_cpf);
     }
 
+    public List<ReservaFuturaDTO> findAllClienteWithReservaInPeriod(LocalDateTime init, LocalDateTime end) {
+        return this.jdbcTemplate.query("SELECT nome, telefone, id_reserva, qnt_pessoas, data_hora_chegada FROM Cliente INNER JOIN Reserva ON cpf = cliente_cpf WHERE data_hora_chegada BETWEEN ? AND ? ORDER BY data_hora_chegada",
+                this::mapRowToReservaFutura, init, end);
+    }
+
+    public List<Reserva> findAllFutureReserva(String clienteCpf) {
+        return this.jdbcTemplate.query("SELECT * FROM Reserva WHERE cliente_cpf=? AND data_hora_chegada > NOW() ORDER BY data_hora_chegada", this::mapRowToReserva, clienteCpf);
+    }
+
+    public List<ReservaFuturaDTO> findAllFutureBiggerThan(short qntPessoas) {
+        return this.jdbcTemplate.query("SELECT nome, telefone, id_reserva, qnt_pessoas, data_hora_chegada FROM Cliente INNER JOIN Reserva ON cpf = cliente_cpf WHERE data_hora_chegada > NOW() AND qnt_pessoas >= ? ORDER BY data_hora_chegada",
+                this::mapRowToReservaFutura, qntPessoas);
+    }
+
+    public List<Occupation_DayDTO> findOccupationPerDay() {
+        return this.jdbcTemplate.query("SELECT DAYNAME(data_hora_chegada) AS day, COUNT(id_reserva) AS num_reserva, SUM(qnt_pessoas) AS total_ppl FROM Reserva GROUP BY day ORDER BY total_ppl",  this::mapRowToOccupation_DayDTO);
+    }
 
     public Reserva insertReserva(Reserva reserva) {
         KeyHolder keyHolder = new GeneratedKeyHolder();
@@ -50,9 +87,9 @@ public class ReservaDao {
             ps.setShort(2, reserva.getQnt_pessoas());
             ps.setObject(3, reserva.getData_hora_chegada());
             return ps;
-            }, keyHolder);
+        }, keyHolder);
 
-        if(keyHolder.getKey() == null) {
+        if (keyHolder.getKey() == null) {
             return null;
         }
 
@@ -72,5 +109,6 @@ public class ReservaDao {
     public int deleteReservaById(short id_reserva) {
         return this.jdbcTemplate.update("DELETE FROM Reserva WHERE id_reserva=?", id_reserva);
     }
+
 
 }

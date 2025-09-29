@@ -31,6 +31,10 @@ public class ClienteDao {
         return this.jdbcTemplate.query("SELECT * FROM Cliente WHERE cpf=?", this::mapRowToCliente, cpf);
     }
 
+    public List<Cliente> findClienteByNome(String nome) {
+        return this.jdbcTemplate.query("SELECT * FROM Cliente WHERE nome=?", this::mapRowToCliente, nome);
+    }
+
 
     public int insertCliente(Cliente cliente) {
         return this.jdbcTemplate.update("INSERT INTO Cliente(cpf, nome, telefone) VALUES(?,?,?)", cliente.getCpf(), cliente.getNome(), cliente.getTelefone());

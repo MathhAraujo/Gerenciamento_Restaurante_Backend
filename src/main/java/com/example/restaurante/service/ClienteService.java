@@ -28,6 +28,14 @@ public class ClienteService {
         return result.get(0);
     }
 
+    public Cliente fetchClienteByNome(String nome) {
+        List<Cliente> result = clienteDao.findClienteByNome(nome);
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result.get(0);
+    }
+
     public Cliente createCliente(Cliente cliente) {
         int ok = clienteDao.insertCliente(cliente);
         if (ok == 1) {

@@ -25,9 +25,18 @@ public class ClienteController {
         return new ResponseEntity<>(clientes, HttpStatus.OK);
     }
 
-    @GetMapping("/find/{cpf}")
+    @GetMapping("/find/cpf/{cpf}")
     public ResponseEntity<Cliente> fetchClienteByCpf(@PathVariable("cpf") String cpf) {
         Cliente cliente = clienteService.fetchClienteByCpf(cpf);
+        if (cliente == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(cliente, HttpStatus.OK);
+    }
+
+    @GetMapping("/find/nome/{nome}")
+    public ResponseEntity<Cliente> fetchClienteByNome(@PathVariable("nome") String nome) {
+        Cliente cliente = clienteService.fetchClienteByNome(nome);
         if (cliente == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -1,6 +1,9 @@
 package com.example.restaurante.service;
 
 import com.example.restaurante.dao.ReservaDao;
+import com.example.restaurante.dto.Occupation_DayDTO;
+import com.example.restaurante.dto.ReservaFuturaDTO;
+import com.example.restaurante.dto.Time_PeriodDTO;
 import com.example.restaurante.model.Reserva;
 import lombok.*;
 import org.springframework.stereotype.Service;
@@ -34,8 +37,35 @@ public class ReservaService {
         if (result.isEmpty()) {
             return null;
         }
-
         return result;
+    }
+
+    public List<ReservaFuturaDTO> fetchAllClientWithReservaInPeriod(Time_PeriodDTO period) {
+        List<ReservaFuturaDTO> result = reservaDao.findAllClienteWithReservaInPeriod(period.init(), period.end());
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result;
+    }
+
+    public List<Reserva> fetchAllFutureReserva(String cliente_cpf) {
+        List<Reserva> result = reservaDao.findAllFutureReserva(cliente_cpf);
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result;
+    }
+
+    public List<ReservaFuturaDTO> fetchAllFutureReservaBiggerThan(short qnt_pessoas) {
+        List<ReservaFuturaDTO> result = reservaDao.findAllFutureBiggerThan(qnt_pessoas);
+        if (result.isEmpty()) {
+            return null;
+        }
+        return result;
+    }
+
+    public List<Occupation_DayDTO> fetchOccupationPerDay() {
+        return reservaDao.findOccupationPerDay();
     }
 
     public Reserva createReserva(Reserva reserva) {
