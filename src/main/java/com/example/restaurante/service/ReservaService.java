@@ -39,16 +39,13 @@ public class ReservaService {
     }
 
     public Reserva createReserva(Reserva reserva) {
-        int ok = reservaDao.insertReserva(reserva);
-        if (ok == 1) {
-            return reserva;
-        }
-        return null;
+        return reservaDao.insertReserva(reserva);
     }
 
     public Reserva updateReserva(Reserva reserva) {
         int ok = reservaDao.updateReserva(reserva);
         if (ok == 1) {
+            reserva.setCliente_cpf(fetchReservaById(reserva.getId_reserva()).getCliente_cpf());
             return reserva;
         }
         return null;

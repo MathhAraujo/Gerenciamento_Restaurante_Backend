@@ -25,7 +25,7 @@ public class ReservaController {
         return new ResponseEntity<>(reservas,HttpStatus.OK);
     }
 
-    @GetMapping("/find/{id_reserva}")
+    @GetMapping("/find/id/{id_reserva}")
     public ResponseEntity<Reserva> fetchReservaById(@PathVariable("id_reserva") short id_reserva){
         Reserva reserva = reservaService.fetchReservaById(id_reserva);
         if(reserva == null){
@@ -34,7 +34,7 @@ public class ReservaController {
         return new ResponseEntity<>(reserva, HttpStatus.OK);
     }
 
-    @GetMapping("/find/{cliente_cpf}")
+    @GetMapping("/find/cpf/{cliente_cpf}")
     public ResponseEntity<List<Reserva>> fetchReservaByCpf(@PathVariable("cliente_cpf") String cliente_cpf){
         List<Reserva> reserva = reservaService.fetchReservaByCpf(cliente_cpf);
         if(reserva == null){
@@ -62,7 +62,7 @@ public class ReservaController {
         return new ResponseEntity<>(reservaUpdate, HttpStatus.OK);
     }
 
-    @DeleteMapping("delete/{cliente_cpf}")
+    @DeleteMapping("delete/cpf/{cliente_cpf}")
     public ResponseEntity<?> deleteAllReservaByCpf(@PathVariable("cliente_cpf") String cliente_cpf){
         int ok = reservaService.deleteAllReservaByCpf(cliente_cpf);
 
@@ -72,7 +72,7 @@ public class ReservaController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @DeleteMapping("delete/{id_reserva}")
+    @DeleteMapping("delete/id/{id_reserva}")
     public ResponseEntity<?> deleteReservaById(@PathVariable("id_reserva") short id_reserva){
         int ok = reservaService.deleteReservaById(id_reserva);
 
