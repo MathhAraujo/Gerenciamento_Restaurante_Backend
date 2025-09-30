@@ -1,6 +1,5 @@
 package com.example.restaurante.controller;
 
-import com.example.restaurante.dto.Occupation_DayDTO;
 import com.example.restaurante.dto.ReservaFuturaDTO;
 import com.example.restaurante.dto.Time_PeriodDTO;
 import com.example.restaurante.model.Reserva;
@@ -46,15 +45,6 @@ public class ReservaController {
         return new ResponseEntity<>(reserva, HttpStatus.OK);
     }
 
-    @GetMapping("/find/reservation_period/")
-    public ResponseEntity<List<ReservaFuturaDTO>> fetchAllClientWithReservaInPeriod(@RequestBody Time_PeriodDTO period) {
-        List<ReservaFuturaDTO> reserva = reservaService.fetchAllClientWithReservaInPeriod(period);
-        if (reserva == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(reserva, HttpStatus.OK);
-    }
-
     @GetMapping("/find/future/{cliente_cpf}")
     public ResponseEntity<List<Reserva>> fetchAllFutureReserva(@PathVariable String cliente_cpf) {
         List<Reserva> reserva = reservaService.fetchAllFutureReserva(cliente_cpf);
@@ -73,11 +63,6 @@ public class ReservaController {
         return new ResponseEntity<>(reserva, HttpStatus.OK);
     }
 
-    @GetMapping("/data/reserva_day")
-    public ResponseEntity<List<Occupation_DayDTO>> findOccupationPerDay() {
-        return new ResponseEntity<>(reservaService.fetchOccupationPerDay(), HttpStatus.OK);
-    }
-
     @PostMapping("/add")
     public ResponseEntity<Reserva> addReserva(@RequestBody Reserva reserva) {
         Reserva newReserva = reservaService.createReserva(reserva);
@@ -86,6 +71,16 @@ public class ReservaController {
         }
         return new ResponseEntity<>(newReserva, HttpStatus.CREATED);
     }
+
+    @PostMapping("/find/reservation_period/")
+    public ResponseEntity<List<ReservaFuturaDTO>> fetchAllClientWithReservaInPeriod(@RequestBody Time_PeriodDTO period) {
+        List<ReservaFuturaDTO> reserva = reservaService.fetchAllClientWithReservaInPeriod(period);
+        if (reserva == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(reserva, HttpStatus.OK);
+    }
+
 
     @PutMapping("/update")
     public ResponseEntity<Reserva> updateReserva(@RequestBody Reserva reserva) {

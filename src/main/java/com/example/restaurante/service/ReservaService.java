@@ -1,7 +1,6 @@
 package com.example.restaurante.service;
 
 import com.example.restaurante.dao.ReservaDao;
-import com.example.restaurante.dto.Occupation_DayDTO;
 import com.example.restaurante.dto.ReservaFuturaDTO;
 import com.example.restaurante.dto.Time_PeriodDTO;
 import com.example.restaurante.model.Reserva;
@@ -62,10 +61,6 @@ public class ReservaService {
             return null;
         }
         return result;
-    }
-
-    public List<Occupation_DayDTO> fetchOccupationPerDay() {
-        return reservaDao.findOccupationPerDay();
     }
 
     public Reserva createReserva(Reserva reserva) {

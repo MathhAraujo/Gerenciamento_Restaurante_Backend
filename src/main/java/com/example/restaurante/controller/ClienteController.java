@@ -35,8 +35,8 @@ public class ClienteController {
     }
 
     @GetMapping("/find/nome/{nome}")
-    public ResponseEntity<Cliente> fetchClienteByNome(@PathVariable("nome") String nome) {
-        Cliente cliente = clienteService.fetchClienteByNome(nome);
+    public ResponseEntity<List<Cliente>> fetchClienteByNome(@PathVariable("nome") String nome) {
+        List<Cliente> cliente = clienteService.fetchClienteByNome(nome);
         if (cliente == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

@@ -40,14 +40,6 @@ public class ReservaDao {
         );
     }
 
-    private Occupation_DayDTO mapRowToOccupation_DayDTO(ResultSet rs, int rowNum) throws SQLException {
-        return new Occupation_DayDTO(
-                rs.getString("day"),
-                rs.getInt("num_reserva"),
-                rs.getInt("total_ppl")
-        );
-    }
-
     public List<Reserva> findAllReserva() {
         return this.jdbcTemplate.query("SELECT * FROM Reserva", this::mapRowToReserva);
     }
@@ -72,10 +64,6 @@ public class ReservaDao {
     public List<ReservaFuturaDTO> findAllFutureBiggerThan(short qntPessoas) {
         return this.jdbcTemplate.query("SELECT nome, telefone, id_reserva, qnt_pessoas, data_hora_chegada FROM Cliente INNER JOIN Reserva ON cpf = cliente_cpf WHERE data_hora_chegada > NOW() AND qnt_pessoas >= ? ORDER BY data_hora_chegada",
                 this::mapRowToReservaFutura, qntPessoas);
-    }
-
-    public List<Occupation_DayDTO> findOccupationPerDay() {
-        return this.jdbcTemplate.query("SELECT DAYNAME(data_hora_chegada) AS day, COUNT(id_reserva) AS num_reserva, SUM(qnt_pessoas) AS total_ppl FROM Reserva GROUP BY day ORDER BY total_ppl",  this::mapRowToOccupation_DayDTO);
     }
 
     public Reserva insertReserva(Reserva reserva) {

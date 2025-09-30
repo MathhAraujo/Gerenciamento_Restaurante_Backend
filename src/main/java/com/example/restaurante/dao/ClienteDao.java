@@ -32,7 +32,7 @@ public class ClienteDao {
     }
 
     public List<Cliente> findClienteByNome(String nome) {
-        return this.jdbcTemplate.query("SELECT * FROM Cliente WHERE nome=?", this::mapRowToCliente, nome);
+        return this.jdbcTemplate.query("SELECT * FROM Cliente WHERE nome like UPPER(?)", this::mapRowToCliente, "%"+nome+"%".toUpperCase());
     }
 
 
